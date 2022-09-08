@@ -4,13 +4,31 @@ from typing import Iterable
 import uvicorn
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.routing import APIRoute, Mount
 
 from . import __version__
 from .routes import image
+from .errors import APIException
 
 app = FastAPI(title="Imagenery", version=__version__)
 app.include_router(image.router)
+
+# Error Handlers
+
+@app.exception_handler(APIException)
+async def api_exception(_request: Request, exception: APIException):
+    return exception.response()
+
+
+@app.exception_handler(404)
+async def not_found(_request: Request, exception: Exception):
+    return APIException("Not Found", status_code=404).response()
+
+
+@app.exception_handler(500)
+async def internal_server_error(_request: Request, exception: Exception):
+    return APIException(f"{str(exception)}", status_code=404).response()
 
 
 # Root Endpoint
