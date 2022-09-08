@@ -4,13 +4,41 @@ version = "0.1.0"
 description = ""
 authors = ["MrArkon <mrarkon@outlook.com>"]
 license = "AGPL-3.0"
+packages = [
+    { include = "src" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 fastapi = "^0.82.0"
+tomli = "^2.0.1"
+uvicorn = "^0.18.3"
+python-dotenv = "^0.21.0"
 
 [tool.poetry.dev-dependencies]
+black = "^22.8.0"
+isort = "^5.10.1"
+
+[tool.poetry.scripts]
+dev = "src.app:dev"
+start = "src.app:start"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 125
+
+[tool.isort]
+profile = "black"
+line_length = 120
+multi_line_output = 3
+combine_star = true
+star_first = true
+include_trailing_comma = true
+dedup_headings = true
+
+[tool.pyright]
+reportOptionalMemberAccess = false
+reportOptionalOperand = false
