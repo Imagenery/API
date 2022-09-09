@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Request, Response
 
-from ...utilities import Client
+from ...utilities import Client, limiter
 from . import pillow
 
 router = APIRouter(prefix="/image")
@@ -13,15 +13,18 @@ async def process_route(url: str, operation: str) -> Response:
 
 
 @router.get("/invert")
+@limiter.limit("30/minute")
 async def image_invert(request: Request, url: str):
     return await process_route(url, "invert")
 
 
 @router.get("/deepfry")
-async def image_deepfry(url: str):
+@limiter.limit("30/minute")
+async def image_deepfry(request: Request, url: str):
     return await process_route(url, "deepfry")
 
 
 @router.get("/lego")
-async def image_lego(url: str):
+@limiter.limit("30/minute")
+async def image_lego(request: Request, url: str):
     return await process_route(url, "lego")

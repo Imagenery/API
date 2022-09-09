@@ -7,13 +7,16 @@ from fastapi import FastAPI, Request
 from fastapi.routing import APIRoute, Mount
 
 from . import __version__
-from .routes import image
 from .errors import APIException
+from .routes import image
+from .utilities import init_limiter
 
 app = FastAPI(title="Imagenery", version=__version__)
+init_limiter(app)
 app.include_router(image.router)
 
 # Error Handlers
+
 
 @app.exception_handler(APIException)
 async def api_exception(_request: Request, exception: APIException):
